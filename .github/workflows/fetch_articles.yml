@@ -1,0 +1,33 @@
+name: Fetch Scientific Articles
+
+# Executa a cada 1 hora
+on:
+  schedule:
+    - cron: '0 * * * *' # todo início da hora (UTC)
+  workflow_dispatch: # permite rodar manualmente
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Pega o código do repositório
+      - uses: actions/checkout@v4
+
+      # 2. Configura Node.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. Instala dependências
+      - run: npm install
+
+      # 4. Cria arquivo .env com secrets
+      - name: Setup Environment
+        run: |
+          echo "PUBMED_API_KEY=${{ secrets.PUBMED_API_KEY }}" >> .env
+          echo "GROK_API_KEY=${{ secrets.GROK_API_KEY }}" >> .env
+          echo "FIREBASE_KEY=${{ secrets.FIREBASE_KEY }}" >> .env
+
+      # 5. Roda o script principal
+      - name: Run Script
+        run: node index.js
