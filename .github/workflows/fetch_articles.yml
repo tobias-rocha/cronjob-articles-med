@@ -26,7 +26,15 @@ jobs:
         run: |
           echo "PUBMED_API_KEY=${{ secrets.PUBMED_API_KEY }}" >> .env
           echo "GROK_API_KEY=${{ secrets.GROK_API_KEY }}" >> .env
-          echo "FIREBASE_KEY=${{ secrets.FIREBASE_KEY }}" >> .env
+          echo "FIREBASE_TYPE=${{ secrets.FIREBASE_TYPE }}" >> .env
+          echo "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
+          echo "FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }}" >> .env
+          echo "FIREBASE_CLIENT_EMAIL=${{ secrets.FIREBASE_CLIENT_EMAIL }}" >> .env
+          echo "FIREBASE_CLIENT_ID=${{ secrets.FIREBASE_CLIENT_ID }}" >> .env
+          echo "FIREBASE_AUTH_URI=${{ secrets.FIREBASE_AUTH_URI }}" >> .env
+          echo "FIREBASE_TOKEN_URI=${{ secrets.FIREBASE_TOKEN_URI }}" >> .env
+          echo "FIREBASE_AUTH_PROVIDER_X509_CERT_URL=${{ secrets.FIREBASE_AUTH_PROVIDER_X509_CERT_URL }}" >> .env
+          echo "FIREBASE_CLIENT_X509_CERT_URL=${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}" >> .env
 
       # 5. Roda o script principal
       - name: Run Script
