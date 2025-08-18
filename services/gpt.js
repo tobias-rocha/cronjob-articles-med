@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-async function generateSummary(text) {
+async function generateSummary(textAbstract, text) {
 	const apiKey = process.env.GPT_API_KEY;
 
 	const resp = await axios.post(
@@ -32,6 +32,7 @@ async function generateSummary(text) {
 			- Se houver termos sem tradução exata ou consagrados em inglês, apresentar a tradução em português seguida do termo original entre parênteses.\n
 			  Ex.: análise fenomenológica interpretativa (Interpretative Phenomenological Analysis - IPA)\n
 			- Informe ao final se a sua análise foi feita apenas utilizando o abstract ou se foi utilizado o artigo na íntegra.\n\n
+			Texto abstract do artigo para análise:\n\n${textAbstract}\n\n
 			Texto do artigo para análise:\n\n${text}`
 		},
 		{

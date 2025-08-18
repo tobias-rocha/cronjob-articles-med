@@ -18,11 +18,11 @@ async function main() {
 					let fullText = '';
 
 					if (artigo.doi) {
-						fullText = await extractArticleText(artigo.doi);
+						fullText = await extractArticleText(artigo.abstractFull, artigo.doi);
 					}
 
 					if (fullText) {
-						artigo.resumo_gpt = await generateSummary(fullText);
+						artigo.resumo_gpt = await generateSummary(artigo.abstractFull, fullText);
 						const saved = await saveArticle(artigo);
 						console.log(saved ? `Salvo: ${artigo.title}` : `Já existe: ${artigo.title}`);
 					}
