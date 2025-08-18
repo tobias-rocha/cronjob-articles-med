@@ -31,7 +31,7 @@ async function fetchPubMedArticles(date = null) {
 	let ids = esearchResp.data.esearchresult.idlist;
 
 	const snapshot = await db.collection('artigos').get();
-	const savedIds = snapshot.docs.map(doc => doc.pmid);
+	const savedIds = snapshot.docs.map(doc => doc.data().pmid);
 
 	ids = ids.filter(id => !savedIds.includes(id));
 
