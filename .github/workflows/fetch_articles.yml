@@ -4,7 +4,6 @@ name: Fetch Scientific Articles
 on:
   schedule:
     - cron: "0 10,18 * * *" # executa às 10h e às 18h todos os dias (2x por dia)
-  workflow_dispatch: # permite rodar manualmente
 
 jobs:
   fetch:
