@@ -25,7 +25,7 @@ jobs:
       - name: Setup Environment
         run: |
           echo "PUBMED_API_KEY=${{ secrets.PUBMED_API_KEY }}" >> .env
-          echo "GROK_API_KEY=${{ secrets.GROK_API_KEY }}" >> .env
+          echo "GPT_API_KEY=${{ secrets.GPT_API_KEY }}" >> .env
           echo "FIREBASE_TYPE=${{ secrets.FIREBASE_TYPE }}" >> .env
           echo "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
           echo "FIREBASE_PRIVATE_KEY=${{ secrets.FIREBASE_PRIVATE_KEY }}" >> .env

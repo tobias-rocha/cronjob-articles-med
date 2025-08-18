@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/.env" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/index.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/extractArticle.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/firebase.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/gpt.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sources/pubmed.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test.js" charset="UTF-8" />
+  </component>
+</project>

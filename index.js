@@ -1,28 +1,37 @@
 require('dotenv').config();
 const { fetchPubMedArticles } = require('./sources/pubmed');
 const { generateSummary } = require('./services/gpt');
-const { saveArticle, getRemoteConfig } = require('./services/firebase');
+const { saveArticle } = require('./services/firebase');
+const {extractArticleText} = require("./services/extractArticle");
 
 async function main() {
-	const config = await getRemoteConfig();
-	const queries = config.queries;
-
 	const fontes = [
 		fetchPubMedArticles,
 	];
 
 	for (const fetchFunc of fontes) {
-		for (const q of queries) {
-			const artigos = await fetchFunc(q.term, q.limit);
+		const artigos = await fetchFunc();
+
+		if (artigos) {
 			for (const artigo of artigos) {
-				// artigo.resumo_gpt = await generateSummary(artigo.abstractSections);
-				const saved = await saveArticle(artigo);
-				console.log(saved ? `Salvo: ${artigo.titulo}` : `Já existe: ${artigo.titulo}`);
+				if (artigo.abstractFull) {
+					let fullText = '';
+
+					if (artigo.doi) {
+						fullText = await extractArticleText(artigo.doi);
+					}
+
+					if (fullText) {
+						artigo.resumo_gpt = await generateSummary(fullText);
+						const saved = await saveArticle(artigo);
+						console.log(saved ? `Salvo: ${artigo.title}` : `JÃ¡ existe: ${artigo.title}`);
+					}
+				}
 			}
 		}
 	}
 
-	console.log('Concluído');
+	console.log('ConcluÃ­do');
 }
 
 main().catch(console.error);
