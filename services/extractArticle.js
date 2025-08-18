@@ -30,7 +30,6 @@ async function extractArticleText(doi) {
 			"Access options",
 			"Subscribe to journal"
 		];
-
 		const bodyText = document.body.textContent || "";
 		if (paywallIndicators.some(ind => bodyText.includes(ind))) {
 			return null;
@@ -39,38 +38,41 @@ async function extractArticleText(doi) {
 		const reader = new Readability(document);
 		const article = reader.parse();
 
-		if (article && article.textContent) {
-			let text = article.textContent.replace(/\n+/g, "\n").trim();
+		if (!article || !article.textContent) return null;
 
-			const startMarkers = ["Abstract:", "Abstract", "1. Introduction", "Introduction:", "Introduction"];
-			let startIndex = -1;
-			for (const marker of startMarkers) {
-				const idx = text.indexOf(marker);
-				if (idx !== -1) {
-					startIndex = idx;
-					break;
-				}
+		let text = article.textContent.replace(/\n+/g, "\n").trim();
+
+		const startMarkers = [
+			"Introduction", "1. Introduction", "Abstract:", "Abstract"
+		];
+		let startIndex = 0;
+		for (const marker of startMarkers) {
+			const idx = text.indexOf(marker);
+			if (idx !== -1) {
+				startIndex = idx;
+				break;
 			}
-			if (startIndex === -1) startIndex = 0;
-
-			const endMarkers = ["Data availability", "Acknowledgments", "Supplementary Materials"];
-			let endIndex = text.length;
-			for (const marker of endMarkers) {
-				const idx = text.indexOf(marker, startIndex);
-				if (idx !== -1) {
-					endIndex = idx;
-					break;
-				}
-			}
-
-			text = text.substring(startIndex, endIndex).trim();
-
-			text = text.replace(/\n{2,}/g, "\n\n");
-
-			return text;
-		} else {
-			return false;
 		}
+
+		const endMarkers = [
+			"Bibliography", "Acknowledgments",
+			"Conflict of Interest", "Data availability",
+		];
+		let endIndex = text.length;
+		for (const marker of endMarkers) {
+			const idx = text.indexOf(marker, startIndex);
+			if (idx !== -1) {
+				endIndex = idx;
+				break;
+			}
+		}
+
+		text = text.substring(startIndex, endIndex).trim();
+		text = text.replace(/\n{2,}/g, "\n\n");
+
+		if (text.length < 500) return null;
+
+		return text;
 
 	} catch (err) {
 		return null;
