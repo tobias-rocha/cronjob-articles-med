@@ -3,7 +3,7 @@ name: Fetch Scientific Articles
 # Executa a cada 1 hora
 on:
   schedule:
-    - cron: '0 * * * *' # todo início da hora (UTC)
+    - cron: "0 10,18 * * *" # executa às 10h e às 18h todos os dias (2x por dia)
   workflow_dispatch: # permite rodar manualmente
 
 jobs:
