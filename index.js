@@ -3,6 +3,7 @@ const { fetchPubMedArticles } = require('./sources/pubmed');
 const { generateSummary } = require('./services/gpt');
 const { saveArticle } = require('./services/firebase');
 const {extractArticleText} = require("./services/extractArticle");
+const {gptClassifier} = require("./services/gptClassifier");
 
 async function main() {
 	const fontes = [
@@ -17,14 +18,20 @@ async function main() {
 				if (artigo.abstractFull) {
 					let fullText = '';
 
-					if (artigo.doi) {
-						fullText = await extractArticleText(artigo.abstractFull, artigo.doi);
-					}
+					let classifier = await gptClassifier(artigo.abstractFull);
 
-					if (fullText) {
-						artigo.resumo_gpt = await generateSummary(artigo.abstractFull, fullText);
-						const saved = await saveArticle(artigo);
-						console.log(saved ? `Salvo: ${artigo.title}` : `Já existe: ${artigo.title}`);
+					if (classifier) {
+						artigo.applicableAreas = classifier.areas_aplicaveis;
+
+						if (artigo.doi) {
+							fullText = await extractArticleText(artigo.doi);
+						}
+
+						if (fullText) {
+							artigo.resumo_gpt = await generateSummary(artigo.abstractFull, fullText);
+							const saved = await saveArticle(artigo);
+							console.log(saved ? `Salvo: ${artigo.title}` : `Já existe: ${artigo.title}`);
+						}
 					}
 				}
 			}
