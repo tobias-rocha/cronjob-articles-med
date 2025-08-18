@@ -31,8 +31,8 @@ async function generateSummary(textAbstract, text) {
 			- Traduzir integralmente todo o texto para português Brasil.\n
 			- Se houver termos sem tradução exata ou consagrados em inglês, apresentar a tradução em português seguida do termo original entre parênteses.\n
 			  Ex.: análise fenomenológica interpretativa (Interpretative Phenomenological Analysis - IPA)\n
-			- Informe ao final se a sua análise foi feita apenas utilizando o abstract ou se foi utilizado o artigo na íntegra.\n\n
-			Texto abstract do artigo para análise:\n\n${textAbstract}\n\n
+			- Informe ao final se a sua análise foi feita apenas utilizando o resumo ou se foi utilizado o artigo na íntegra.\n\n
+			Texto resumo do artigo para análise:\n\n${textAbstract}\n\n
 			Texto do artigo para análise:\n\n${text}`
 		},
 		{
