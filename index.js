@@ -27,11 +27,9 @@ async function main() {
 							fullText = await extractArticleText(artigo.doi);
 						}
 
-						if (fullText) {
-							artigo.resumo_gpt = await generateSummary(artigo.abstractFull, fullText);
-							const saved = await saveArticle(artigo);
-							console.log(saved ? `Salvo: ${artigo.title}` : `Já existe: ${artigo.title}`);
-						}
+						artigo.resumo_gpt = await generateSummary(artigo.abstractFull, fullText);
+						const saved = await saveArticle(artigo);
+						console.log(saved ? `Salvo: ${artigo.title}` : `Já existe: ${artigo.title}`);
 					}
 				}
 			}
