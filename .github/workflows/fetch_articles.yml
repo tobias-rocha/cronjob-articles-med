@@ -3,7 +3,7 @@ name: Fetch Scientific Articles
 # Executa a cada 1 hora
 on:
   schedule:
-    - cron: "0 10,18 * * *" # executa às 10h e às 18h todos os dias (2x por dia)
+    - cron: "0 10,18,23 * * *" # executa às 10h, 18h e 23h todos os dias
 
 jobs:
   fetch:
