@@ -24,7 +24,17 @@ async function main() {
 						artigo.applicableAreas = classifier.areas_aplicaveis;
 
 						if (artigo.doi) {
-							fullText = await extractArticleText(artigo.doi);
+							const result = await extractArticleText(artigo.doi);
+
+							if (
+								result &&
+								typeof result === 'string' &&
+								!/[\u0000-\u001F\u007F-\u009F]/.test(result)
+							) {
+								fullText = result;
+							} else {
+								console.log(`DOI ${artigo.doi} retornou conteúdo não textual ou inválido.`);
+							}
 						}
 
 						artigo.resumo_gpt = await generateSummary(artigo.abstractFull, fullText);
