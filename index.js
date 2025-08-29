@@ -32,8 +32,6 @@ async function main() {
 								!/[\u0000-\u001F\u007F-\u009F]/.test(result)
 							) {
 								fullText = result;
-							} else {
-								console.log(`DOI ${artigo.doi} retornou conteúdo não textual ou inválido.`);
 							}
 						}
 

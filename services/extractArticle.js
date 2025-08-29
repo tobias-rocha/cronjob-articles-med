@@ -42,6 +42,8 @@ async function extractArticleText(doi) {
 
 		let text = article.textContent.replace(/\n+/g, "\n").trim();
 
+		text = text.replace(/\/\/<!\[CDATA\[[\s\S]*?\/\/\]\]>/g, "");
+
 		const startMarkers = [
 			"Introduction", "1. Introduction", "Abstract:", "Abstract"
 		];
