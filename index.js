@@ -1,11 +1,10 @@
 require('dotenv').config();
 const { fetchPubMedArticles } = require('./sources/pubmed');
 const { generateSummary } = require('./services/gpt');
-const { saveArticle, getArticle, sendNotification, db } = require('./services/firebase');
+const { saveArticle, getArticle, sendNotification, callSendEmail, db } = require('./services/firebase');
 
 async function main() {
 
-	// Função de normalização
 	function normalizeKeyword(str) {
 		return str
 			.toLowerCase()
@@ -17,7 +16,22 @@ async function main() {
 			.replace(/^_|_$/g, '');
 	}
 
-	// 1. Buscar todos os usuários
+	function generateArticleHTML(article) {
+		return `
+			<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+			  <h2 style="color: #1E40AF;">${article.title}</h2>
+			  ${article.resumo_gpt.objetivo_do_estudo ? `<p><strong>Objetivo do Estudo:</strong> ${article.resumo_gpt.objetivo_do_estudo}</p>` : ''}
+			  ${article.authors ? `<p><strong>Autores:</strong> ${article.authors.join(', ')}</p>` : ''}
+			  <p>
+				<a href="https://atualizascience.web.app/articles/${encodeURIComponent(article.pmid)}"
+				   style="display: inline-block; padding: 10px 15px; background-color: #1E40AF; color: #fff; text-decoration: none; border-radius: 4px;">
+				   Ler artigo completo
+				</a>
+			  </p>
+			</div>
+		  `;
+	}
+
 	const usersSnapshot = await db.collection('usuarios').get();
 	const usuarios = usersSnapshot.docs.map(doc => ({
 		id: doc.id,
@@ -63,13 +77,24 @@ async function main() {
 
 				const match = userKeywords.some(kw => artigoKeywords.includes(kw));
 				if (match && artigo.resumo_gpt.relevancia >= usuario.notificacoes.relevancia && usuario.notificacoes.habilitado) {
-					const topic = `usuario_${usuario.uid}`;
-					await sendNotification(
-						topic,
-						'NOVO ARTIGO',
-						artigo.resumo_gpt.titulo_original_traduzido,
-						artigo.pmid
-					);
+					if (!usuario.ios) {
+						const topic = `usuario_${usuario.id}`;
+						await sendNotification(
+							topic,
+							'NOVO ARTIGO',
+							artigo.resumo_gpt.titulo_original_traduzido,
+							artigo.pmid
+						);
+					} else {
+						const htmlContent = generateArticleHTML(artigo);
+
+						await callSendEmail({
+							to: usuario.email,
+							subject: `Novo artigo: ${artigo.title}`,
+							text: `${artigo.title}\nLeia mais: https://atualizascience.web.app/articles/${encodeURIComponent(article.pmid)}`,
+							html: htmlContent
+						});
+					}
 				}
 			}
 		}

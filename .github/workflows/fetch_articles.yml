@@ -1,9 +1,9 @@
 name: Fetch Scientific Articles
 
-# Executa a cada 1 hora
+# Executa a cada 3 horas
 on:
   schedule:
-    - cron: '0 * * * *' # todo início da hora (UTC)
+    - cron: '0 */3 * * *' # a cada 3 horas, no minuto 0 (UTC)
 
 jobs:
   fetch:

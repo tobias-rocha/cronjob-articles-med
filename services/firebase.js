@@ -79,4 +79,24 @@ async function sendNotification({ topic, title, body, pmid }) {
 	}
 }
 
-module.exports = { db, saveArticle, getArticle, sendNotification };
+async function callSendEmail({ to, subject, text, html }) {
+	try {
+		const res = await fetch('https://sendemail-e4gqqsggea-uc.a.run.app/sendEmail', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ to, subject, text, html }),
+		});
+
+		const data = await res.json();
+		if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
+		console.log('Email enviado com sucesso:', data);
+		return data;
+	} catch (err) {
+		console.error('Erro ao chamar sendEmail:', err);
+		throw err;
+	}
+}
+
+module.exports = { db, saveArticle, getArticle, sendNotification, callSendEmail };
