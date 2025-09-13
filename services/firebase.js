@@ -21,10 +21,62 @@ db.settings({ ignoreUndefinedProperties: true });
 
 async function saveArticle(article) {
 	const ref = db.collection('artigos').doc(article.pmid);
-	const doc = await ref.get();
-	if (doc.exists) return false;
 	await ref.set({ ...article, dateColected: admin.firestore.Timestamp.now() });
 	return true;
+}
+
+async function getArticle(article) {
+	const ref = db.collection('artigos').doc(article.pmid);
+	const doc = await ref.get();
+
+	return doc.exists;
+}
+
+async function sendNotification({ topic, title, body, doi }) {
+	try {
+		const message = {
+			data: {
+				priority: "high",
+				sound: "default",
+				contentAvailable: "true",
+				customSentTime: `${Date.now()}`,
+				link: doi
+					? `https://atualizascience.web.app/articles/${encodeURIComponent(doi)}`
+					: "https://atualizascience.web.app/"
+			},
+			notification: {
+				title: title,
+				body: body
+			},
+			webpush: {
+				notification: {
+					icon: 'https://firebasestorage.googleapis.com/v0/b/atualizascience.firebasestorage.app/o/logo_azul_img.png?alt=media&token=6c43068d-0d86-4404-aadf-0ce44abaf8ca'
+				},
+				fcmOptions: {
+					link: doi
+						? `https://atualizascience.web.app/articles/${encodeURIComponent(doi)}`
+						: "https://atualizascience.web.app/"
+				}
+			},
+			topic: topic,
+			apns: {
+				payload: {
+					aps: {
+						alert: {
+							title: title,
+							body: body
+						},
+						contentAvailable: true
+					}
+				},
+			}
+		};
+
+		const response = await admin.messaging().send(message);
+		console.log("Notificação enviada:", response);
+	} catch (err) {
+		console.error("Erro ao enviar notificação:", err);
+	}
 }
 
 module.exports = { db, saveArticle };

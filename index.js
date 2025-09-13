@@ -1,34 +1,75 @@
 require('dotenv').config();
 const { fetchPubMedArticles } = require('./sources/pubmed');
 const { generateSummary } = require('./services/gpt');
-const { saveArticle } = require('./services/firebase');
+const { saveArticle, getArticle, sendNotification, db } = require('./services/firebase');
 
 async function main() {
-	const fontes = [
-		fetchPubMedArticles,
-	];
+
+	// Função de normalização
+	function normalizeKeyword(str) {
+		return str
+			.toLowerCase()
+			.normalize('NFD')
+			.replace(/[\u0300-\u036f]/g, '')
+			.replace(/\s+/g, '_')
+			.replace(/\b(e|de|do|da|dos|das|em|com|para|no|na|nos|nas)\b/g, '')
+			.replace(/__+/g, '_')
+			.replace(/^_|_$/g, '');
+	}
+
+	// 1. Buscar todos os usuários
+	const usersSnapshot = await db.collection('usuarios').get();
+	const usuarios = usersSnapshot.docs.map(doc => ({
+		id: doc.id,
+		palavras_chave: doc.data().palavras_chave || []
+	}));
+
+	const fontes = [fetchPubMedArticles];
 
 	for (const fetchFunc of fontes) {
 		const artigos = await fetchFunc();
 
-		if (artigos) {
-			for (const artigo of artigos) {
-				const wordCount = artigo.abstractFull.trim().split(/\s+/).length;
+		if (!artigos) continue;
 
-				if (wordCount >= 150) {
-					const resumo = await generateSummary(artigo.abstractFull);
+		for (const artigo of artigos) {
+			const wordCount = artigo.abstractFull.trim().split(/\s+/).length;
 
-					try {
-						artigo.resumo_gpt = typeof resumo === 'string' ? JSON.parse(resumo) : resumo;
-					} catch (e) {
-						console.log(`Erro ao parsear resumo de ${artigo.title}`, e);
-						artigo.resumo_gpt = { error: "Resumo inválido", raw: resumo };
-					}
+			if (wordCount < 150) {
+				console.log(`Resumo ignorado (poucas palavras): ${artigo.title} (${wordCount} palavras)`);
+				continue;
+			}
 
-					const saved = await saveArticle(artigo);
-					console.log(saved ? `Salvo: ${artigo.title}` : `Já existe: ${artigo.title}`);
-				} else {
-					console.log(`Resumo ignorado (poucas palavras): ${artigo.title} (${wordCount} palavras)`);
+			const ja_existe = await getArticle(artigo);
+			if (ja_existe) {
+				console.log(`Já existe: ${artigo.title}`);
+				continue;
+			}
+
+			const resumo = await generateSummary(artigo.abstractFull);
+			try {
+				artigo.resumo_gpt = typeof resumo === 'string' ? JSON.parse(resumo) : resumo;
+			} catch (e) {
+				console.log(`Erro ao parsear resumo de ${artigo.title}`, e);
+				continue;
+			}
+
+			await saveArticle(artigo);
+			console.log(`Salvo: ${artigo.title}`);
+
+			const artigoKeywords = (artigo.resumo_gpt.palavras_chave || []).map(normalizeKeyword);
+
+			for (const usuario of usuarios) {
+				const userKeywords = (usuario.palavras_chave || []).map(normalizeKeyword);
+
+				const match = userKeywords.some(kw => artigoKeywords.includes(kw));
+				if (match) {
+					const topic = `usuario_${usuario.id}`;
+					await sendNotification(
+						topic,
+						'NOVO ARTIGO',
+						artigo.resumo_gpt.titulo_original_traduzido,
+						artigo.doi
+					);
 				}
 			}
 		}
