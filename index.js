@@ -62,7 +62,7 @@ async function main() {
 				const userKeywords = (usuario.palavras_chave || []).map(normalizeKeyword);
 
 				const match = userKeywords.some(kw => artigoKeywords.includes(kw));
-				if (match) {
+				if (match && artigo.resumo_gpt.relevancia >= usuario.notificacoes.relevancia) {
 					const topic = `usuario_${usuario.uid}`;
 					await sendNotification(
 						topic,
