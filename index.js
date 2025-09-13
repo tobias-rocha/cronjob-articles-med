@@ -35,7 +35,7 @@ async function main() {
 			const wordCount = artigo.abstractFull.trim().split(/\s+/).length;
 
 			if (wordCount < 150) {
-				console.log(`Resumo ignorado (poucas palavras): ${artigo.title} (${wordCount} palavras)`);
+				console.log(`Resumo ignorado (poucas palavras): ${artigo.title} (${wordCount} palavras), Link: ${artigo.link}`);
 				continue;
 			}
 
@@ -63,12 +63,12 @@ async function main() {
 
 				const match = userKeywords.some(kw => artigoKeywords.includes(kw));
 				if (match) {
-					const topic = `usuario_${usuario.id}`;
+					const topic = `usuario_${usuario.uid}`;
 					await sendNotification(
 						topic,
 						'NOVO ARTIGO',
 						artigo.resumo_gpt.titulo_original_traduzido,
-						artigo.doi
+						artigo.pmid
 					);
 				}
 			}

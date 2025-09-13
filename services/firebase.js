@@ -32,7 +32,7 @@ async function getArticle(article) {
 	return doc.exists;
 }
 
-async function sendNotification({ topic, title, body, doi }) {
+async function sendNotification({ topic, title, body, pmid }) {
 	try {
 		const message = {
 			data: {
@@ -40,8 +40,8 @@ async function sendNotification({ topic, title, body, doi }) {
 				sound: "default",
 				contentAvailable: "true",
 				customSentTime: `${Date.now()}`,
-				link: doi
-					? `https://atualizascience.web.app/articles/${encodeURIComponent(doi)}`
+				link: pmid
+					? `https://atualizascience.web.app/articles/${encodeURIComponent(pmid)}`
 					: "https://atualizascience.web.app/"
 			},
 			notification: {
@@ -53,8 +53,8 @@ async function sendNotification({ topic, title, body, doi }) {
 					icon: 'https://firebasestorage.googleapis.com/v0/b/atualizascience.firebasestorage.app/o/logo_azul_img.png?alt=media&token=6c43068d-0d86-4404-aadf-0ce44abaf8ca'
 				},
 				fcmOptions: {
-					link: doi
-						? `https://atualizascience.web.app/articles/${encodeURIComponent(doi)}`
+					link: pmid
+						? `https://atualizascience.web.app/articles/${encodeURIComponent(pmid)}`
 						: "https://atualizascience.web.app/"
 				}
 			},
@@ -79,4 +79,4 @@ async function sendNotification({ topic, title, body, doi }) {
 	}
 }
 
-module.exports = { db, saveArticle };
+module.exports = { db, saveArticle, getArticle, sendNotification };
