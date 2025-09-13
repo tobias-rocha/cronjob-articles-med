@@ -7,21 +7,16 @@ async function gptClassifier(text) {
 		'https://api.openai.com/v1/responses',
 		{
 			model: 'gpt-5-nano',
-			input: `Você é um avaliador científico especializado em medicina, nutrição, fisioterapia, odontologia, psicologia e outras áreas da saúde.\n
-			Sua função é ler o RESUMO (abstract) de um artigo científico e determinar se ele é relevante e aplicável à prática clínica de profissionais de saúde.\n\n
-			Critérios de avaliação:\n
-			- Relevante: artigos que tragam implicações para diagnóstico, tratamento, manejo clínico, prevenção, impacto psicossocial, condutas profissionais ou melhorias no cuidado de pacientes.\n
-			- Não relevante: artigos excessivamente específicos de laboratório, estudos técnicos sem aplicação clínica direta, experimentos em animais sem tradução clara para prática clínica, ou análises muito restritas que não agregam ao cuidado em saúde.\n\n
-			Formato de resposta (JSON):\n
-			{\n
-			  "relevancia": "Sim" ou "Não",\n
-			  "areas_aplicaveis": ["Medicina", "Nutrição", "Fisioterapia", "Educação física", "Psicologia", "Outras"]\n
-			}\n\n
-			Regras:\n
-			- Sempre responder no formato JSON acima, sem texto fora do JSON.\n
-			- Se a relevância for "Não", manter "areas_aplicaveis" como lista vazia [].\n
-			- Basear a decisão apenas no abstract fornecido.:\n\n
-			RESUMO DO ARTIGO:\n\n${text}`
+			input: `Você é um avaliador científico especializado em saúde.\n
+				Sua função é ler o RESUMO (abstract) de um artigo e classificar se ele é relevante para a prática clínica de profissionais da saúde (medicina, nutrição, fisioterapia, odontologia, psicologia e educação física).\n\n
+				Critérios:\n
+				- Relevante: artigos que tenham implicações para diagnóstico, tratamento, prevenção, manejo clínico, impacto psicossocial ou melhoria no cuidado de pacientes.\n
+				- Não relevante: artigos muito técnicos, laboratoriais, experimentais sem aplicação clínica clara, ou estudos em animais sem tradução direta para prática clínica.\n\n
+				Formato de resposta (JSON):\n
+				{\n
+				  "relevancia": "Sim" ou "Não"\n
+				}\n\n
+				RESUMO DO ARTIGO:\n\n${text}`
 		},
 		{
 			headers: {
@@ -42,7 +37,7 @@ async function gptClassifier(text) {
 	}
 
 	if (parsed.relevancia === "Sim") {
-		return parsed;
+		return true;
 	}
 
 	return null;

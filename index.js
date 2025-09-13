@@ -2,8 +2,6 @@ require('dotenv').config();
 const { fetchPubMedArticles } = require('./sources/pubmed');
 const { generateSummary } = require('./services/gpt');
 const { saveArticle } = require('./services/firebase');
-const {extractArticleText} = require("./services/extractArticle");
-const {gptClassifier} = require("./services/gptClassifier");
 
 async function main() {
 	const fontes = [
@@ -15,30 +13,22 @@ async function main() {
 
 		if (artigos) {
 			for (const artigo of artigos) {
-				if (artigo.abstractFull) {
-					let fullText = '';
+				const wordCount = artigo.abstractFull.trim().split(/\s+/).length;
 
-					let classifier = await gptClassifier(artigo.abstractFull);
+				if (wordCount >= 150) {
+					const resumo = await generateSummary(artigo.abstractFull);
 
-					if (classifier) {
-						artigo.applicableAreas = classifier.areas_aplicaveis;
-
-						if (artigo.doi) {
-							const result = await extractArticleText(artigo.doi);
-
-							if (
-								result &&
-								typeof result === 'string' &&
-								!/[\u0000-\u001F\u007F-\u009F]/.test(result)
-							) {
-								fullText = result;
-							}
-						}
-
-						artigo.resumo_gpt = await generateSummary(artigo.abstractFull, fullText);
-						const saved = await saveArticle(artigo);
-						console.log(saved ? `Salvo: ${artigo.title}` : `Já existe: ${artigo.title}`);
+					try {
+						artigo.resumo_gpt = typeof resumo === 'string' ? JSON.parse(resumo) : resumo;
+					} catch (e) {
+						console.log(`Erro ao parsear resumo de ${artigo.title}`, e);
+						artigo.resumo_gpt = { error: "Resumo inválido", raw: resumo };
 					}
+
+					const saved = await saveArticle(artigo);
+					console.log(saved ? `Salvo: ${artigo.title}` : `Já existe: ${artigo.title}`);
+				} else {
+					console.log(`Resumo ignorado (poucas palavras): ${artigo.title} (${wordCount} palavras)`);
 				}
 			}
 		}

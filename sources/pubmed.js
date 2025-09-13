@@ -13,7 +13,7 @@ async function fetchPubMedArticles(date = null) {
 
 	let allArticles = [];
 	let retstart = 0;
-	const retmax = 10000;
+	const retmax = 1000;
 
 	const esearchResp = await axios.get('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi', {
 		params: {
@@ -85,6 +85,16 @@ async function fetchPubMedArticles(date = null) {
 				title = article.ArticleTitle?.[0] || '';
 			}
 
+			const abstractFull = [
+				title,
+				...abstractSections.map(sec => {
+					const label = sec.label ? `${sec.label}: ` : '';
+					const category = sec.category ? `[${sec.category}] ` : '';
+					return `${label}${category}${sec.text}`.trim();
+				}),
+				keywords.length ? `Keywords: ${keywords.join(', ')}` : ''
+			].filter(Boolean).join('\n');
+
 			allArticles.push({
 				pmid: a.MedlineCitation[0].PMID[0]._,
 				title,
@@ -99,7 +109,7 @@ async function fetchPubMedArticles(date = null) {
 				medlineJournalInfo: a.MedlineCitation[0].MedlineJournalInfo?.[0] || '',
 				date: pubDateFormatted,
 				abstractSections,
-				abstractFull: abstractSections.map(sec => sec.text).join(' '),
+				abstractFull,
 				link: `https://pubmed.ncbi.nlm.nih.gov/${a.MedlineCitation[0].PMID[0]._}/`,
 				doi: article.ELocationID?.find(id => id.$.EIdType === 'doi')?._
 					? `https://doi.org/${article.ELocationID.find(id => id.$.EIdType === 'doi')._}`
