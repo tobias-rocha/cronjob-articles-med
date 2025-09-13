@@ -79,12 +79,12 @@ async function main() {
 				if (match && artigo.resumo_gpt.relevancia >= usuario.notificacoes.relevancia && usuario.notificacoes.habilitado) {
 					if (!usuario.ios) {
 						const topic = `usuario_${usuario.id}`;
-						await sendNotification(
+						await sendNotification({
 							topic,
-							'NOVO ARTIGO',
-							artigo.resumo_gpt.titulo_original_traduzido,
-							artigo.pmid
-						);
+							title: 'NOVO ARTIGO',
+							body: artigo.resumo_gpt.titulo_original_traduzido,
+							pmid: artigo.pmid
+						});
 					} else {
 						const htmlContent = generateArticleHTML(artigo);
 
