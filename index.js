@@ -11,7 +11,6 @@ async function main() {
 			.normalize('NFD')
 			.replace(/[\u0300-\u036f]/g, '')
 			.replace(/\s+/g, '_')
-			.replace(/\b(e|de|do|da|dos|das|em|com|para|no|na|nos|nas)\b/g, '')
 			.replace(/__+/g, '_')
 			.replace(/^_|_$/g, '');
 	}
