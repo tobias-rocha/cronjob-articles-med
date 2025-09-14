@@ -1,6 +1,6 @@
 const axios = require('axios');
 const xml2js = require('xml2js');
-const {db} = require("../services/firebase");
+const { db } = require("../services/firebase");
 
 async function fetchPubMedArticles(date = null) {
 	const apiKey = process.env.PUBMED_API_KEY;
@@ -13,7 +13,7 @@ async function fetchPubMedArticles(date = null) {
 
 	let allArticles = [];
 	let retstart = 0;
-	const retmax = 1000;
+	const retmax = 10000;
 
 	const esearchResp = await axios.get('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi', {
 		params: {
@@ -35,6 +35,8 @@ async function fetchPubMedArticles(date = null) {
 
 	ids = ids.filter(id => !savedIds.includes(id));
 
+	ids = ids.slice(0, 1000);
+
 	const batchSize = 300;
 	for (let i = 0; i < ids.length; i += batchSize) {
 		const batchIds = ids.slice(i, i + batchSize).join(',');
@@ -48,9 +50,7 @@ async function fetchPubMedArticles(date = null) {
 				api_key: apiKey
 			}),
 			{
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				}
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
 			}
 		);
 
@@ -80,10 +80,7 @@ async function fetchPubMedArticles(date = null) {
 				? a.MedlineCitation[0].KeywordList.flatMap(list => list.Keyword.map(k => k._))
 				: [];
 
-			let title = article.ArticleTitle?.[0]._;
-			if (!title) {
-				title = article.ArticleTitle?.[0] || '';
-			}
+			let title = article.ArticleTitle?.[0]._ || article.ArticleTitle?.[0] || '';
 
 			const abstractFull = [
 				title,

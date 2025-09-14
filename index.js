@@ -35,7 +35,7 @@ async function main() {
 	const usersSnapshot = await db.collection('usuarios').get();
 	const usuarios = usersSnapshot.docs.map(doc => ({
 		id: doc.id,
-		palavras_chave: doc.data().palavras_chave || []
+		notificacoes: doc.data().notificacoes
 	}));
 
 	const fontes = [fetchPubMedArticles];
@@ -73,25 +73,35 @@ async function main() {
 			const artigoKeywords = (artigo.resumo_gpt.palavras_chave || []).map(normalizeKeyword);
 
 			for (const usuario of usuarios) {
-				const userKeywords = (usuario.palavras_chave || []).map(normalizeKeyword);
+				const userKeywords = (usuario.notificacoes.palavras_chave || []).map(normalizeKeyword);
 
 				const match = userKeywords.some(kw => artigoKeywords.includes(kw));
 				if (match && artigo.resumo_gpt.relevancia >= usuario.notificacoes.relevancia && usuario.notificacoes.habilitado) {
-					if (!usuario.ios) {
-						const topic = `usuario_${usuario.id}`;
-						await sendNotification({
-							topic,
-							title: 'NOVO ARTIGO',
-							body: artigo.resumo_gpt.titulo_original_traduzido,
-							pmid: artigo.pmid
-						});
+					const tokensSnap = await db.collection("usuarios")
+						.doc(usuario.id)
+						.collection("tokens")
+						.get();
+
+					const tokens = tokensSnap.docs
+						.map(d => d.data().token)
+						.filter(Boolean);
+
+					if (tokens.length > 0) {
+						for (const token of tokens) {
+							await sendNotification(
+								token,
+								'NOVO ARTIGO',
+								artigo.resumo_gpt.titulo_original_traduzido,
+								artigo.pmid
+							);
+						}
 					} else {
 						const htmlContent = generateArticleHTML(artigo);
 
 						await callSendEmail({
 							to: usuario.email,
-							subject: `Novo artigo: ${artigo.title}`,
-							text: `${artigo.title}\nLeia mais: https://atualizascience.web.app/articles/${encodeURIComponent(article.pmid)}`,
+							subject: `Novo artigo: ${artigo.resumo_gpt.titulo_original_traduzido}`,
+							text: `${artigo.resumo_gpt.titulo_original_traduzido}\nLeia mais: https://atualizascience.web.app/articles/${encodeURIComponent(artigo.pmid)}`,
 							html: htmlContent
 						});
 					}

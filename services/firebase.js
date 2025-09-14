@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+const nodemailer = require("nodemailer");
 
 if (!admin.apps.length) {
 	admin.initializeApp({
@@ -18,6 +19,14 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 db.settings({ ignoreUndefinedProperties: true });
+
+const transporter = nodemailer.createTransport({
+	service: "gmail",
+	auth: {
+		user: "atualizascience@gmail.com",
+		pass: "aleynwmqumyxdtgy",
+	},
+});
 
 async function saveArticle(article) {
 	const ref = db.collection('artigos').doc(article.pmid);
@@ -75,27 +84,24 @@ async function sendNotification({ topic, title, body, pmid }) {
 		const response = await admin.messaging().send(message);
 		console.log("Notificação enviada:", response);
 	} catch (err) {
-		console.error("Erro ao enviar notificação:", err);
+		console.log("Erro ao enviar notificação:", err);
 	}
 }
 
 async function callSendEmail({ to, subject, text, html }) {
-	try {
-		const res = await fetch('https://sendemail-e4gqqsggea-uc.a.run.app/sendEmail', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ to, subject, text, html }),
-		});
+	const mailOptions = {
+		from: '"Atualiza Science" <atualizascience@gmail.com>',
+		to,
+		subject,
+		text,
+		html
+	};
 
-		const data = await res.json();
-		if (!res.ok) throw new Error(data.error || 'Erro desconhecido');
-		console.log('Email enviado com sucesso:', data);
-		return data;
+	try {
+		const info = await transporter.sendMail(mailOptions);
+		console.log("Notificação enviada:", info);
 	} catch (err) {
-		console.error('Erro ao chamar sendEmail:', err);
-		throw err;
+		console.log("Erro ao enviar notificação:", err);
 	}
 }
 
