@@ -76,24 +76,13 @@ async function main() {
 
 				const match = userKeywords.some(kw => artigoKeywords.includes(kw));
 				if (match && artigo.resumo_gpt.relevancia >= usuario.notificacoes.relevancia && usuario.notificacoes.habilitado) {
-					const tokensSnap = await db.collection("usuarios")
-						.doc(usuario.id)
-						.collection("tokens")
-						.get();
-
-					const tokens = tokensSnap.docs
-						.map(d => d.data().token)
-						.filter(Boolean);
-
-					if (tokens.length > 0) {
-						for (const token of tokens) {
-							await sendNotification(
-								token,
-								'NOVO ARTIGO',
-								artigo.resumo_gpt.titulo_original_traduzido,
-								artigo.pmid
-							);
-						}
+					if (!usuario.ios) {
+						await sendNotification({
+							topic: 'usuario_'+usuario.uid,
+							title: 'NOVO ARTIGO',
+							body: artigo.resumo_gpt.titulo_original_traduzido,
+							pmid: artigo.pmid
+						});
 					} else {
 						const htmlContent = generateArticleHTML(artigo);
 
