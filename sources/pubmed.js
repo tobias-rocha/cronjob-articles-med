@@ -1,6 +1,6 @@
 const axios = require('axios');
 const xml2js = require('xml2js');
-const { db } = require("../services/firebase");
+const { admin, db } = require("../services/firebase");
 
 async function fetchPubMedArticles(date = null) {
 	const apiKey = process.env.PUBMED_API_KEY;
@@ -30,7 +30,17 @@ async function fetchPubMedArticles(date = null) {
 
 	let ids = esearchResp.data.esearchresult.idlist;
 
-	const snapshot = await db.collection('artigos').get();
+	const hoje = new Date();
+	hoje.setHours(0, 0, 0, 0);
+
+	const amanha = new Date(hoje);
+	amanha.setDate(hoje.getDate() + 1);
+
+	const snapshot = await db.collection('artigos')
+		.where('dateColected', '>=', admin.firestore.Timestamp.fromDate(hoje))
+		.where('dateColected', '<', admin.firestore.Timestamp.fromDate(amanha))
+		.get();
+
 	const savedIds = snapshot.docs.map(doc => doc.data().pmid);
 
 	ids = ids.filter(id => !savedIds.includes(id));

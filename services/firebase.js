@@ -126,4 +126,4 @@ async function callSendEmail({ to, subject, text, html }) {
 	}
 }
 
-module.exports = { db, saveArticle, getArticle, sendNotification, callSendEmail };
+module.exports = { admin, db, saveArticle, getArticle, sendNotification, callSendEmail };
