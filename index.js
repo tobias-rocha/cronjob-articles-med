@@ -78,7 +78,7 @@ async function main() {
 				if (match && artigo.resumo_gpt.relevancia >= usuario.notificacoes.relevancia && usuario.notificacoes.habilitado) {
 					if (!usuario.ios) {
 						await sendNotification({
-							topic: 'usuario_'+usuario.uid,
+							topic: 'usuario_'+usuario.id,
 							title: 'NOVO ARTIGO',
 							body: artigo.resumo_gpt.titulo_original_traduzido,
 							pmid: artigo.pmid
