@@ -79,17 +79,17 @@ async function fetchPubMedArticles(date = null) {
 				: [];
 
 			const abstractSections = article.Abstract
-				? Array.isArray(article.Abstract[0].AbstractText)
-					? article.Abstract[0].AbstractText.map(sec => ({
+				? typeof article.Abstract[0].AbstractText[0] === "string"
+					? [{
+						label: "Abstract",
+						category: "Abstract",
+						text: article.Abstract[0].AbstractText[0]
+					}]
+					: article.Abstract[0].AbstractText.map(sec => ({
 						label: sec.$?.Label || null,
 						category: sec.$?.NlmCategory || null,
-						text: sec._ || ''
+						text: sec._ || ""
 					}))
-					: [{
-						label: 'Abstract',
-						category: 'Abstract',
-						text: article.Abstract[0].AbstractText || ''
-					}]
 				: [];
 
 			const keywords = a.MedlineCitation[0].KeywordList

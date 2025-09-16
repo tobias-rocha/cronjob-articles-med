@@ -15,6 +15,16 @@ async function main() {
 			.replace(/^_|_$/g, '');
 	}
 
+	function relevanceMatches(userLevel, articleValue) {
+		if (!userLevel) return true;
+
+		if (userLevel === "baixa") return articleValue >= 1 && articleValue <= 3;
+		if (userLevel === "media") return articleValue >= 4 && articleValue <= 6;
+		if (userLevel === "alta") return articleValue >= 7 && articleValue <= 10;
+
+		return false;
+	}
+
 	function generateArticleHTML(article) {
 		return `
 			<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
@@ -66,6 +76,11 @@ async function main() {
 				continue;
 			}
 
+			if (artigo.resumo_gpt.relevancia && artigo.resumo_gpt.relevancia.toLowerCase() === "não") {
+				console.log(`⚠️ Ignorado (não relevante): ${artigo.title}`);
+				continue;
+			}
+
 			await saveArticle(artigo);
 			console.log(`Salvo: ${artigo.title}`);
 
@@ -75,7 +90,9 @@ async function main() {
 				const userKeywords = (usuario.notificacoes.palavras_chave || []).map(normalizeKeyword);
 
 				const match = userKeywords.some(kw => artigoKeywords.includes(kw));
-				if (match && artigo.resumo_gpt.relevancia >= usuario.notificacoes.relevancia && usuario.notificacoes.habilitado) {
+				const relevanciaOk = relevanceMatches(usuario.notificacoes.relevancia, parseInt(artigo.resumo_gpt.nivel_de_evidencia_e_limitacoes.nota_nivel_de_evidencia));
+
+				if (match && relevanciaOk && usuario.notificacoes.habilitado) {
 					if (!usuario.ios) {
 						await sendNotification({
 							topic: 'usuario_'+usuario.id,

@@ -78,6 +78,7 @@ async function sendNotification({ topic, title, body, pmid }) {
 				sound: "default",
 				contentAvailable: "true",
 				customSentTime: `${Date.now()}`,
+				pmid: pmid,
 				link: pmid
 					? `https://atualizascience.web.app/articles/${encodeURIComponent(pmid)}`
 					: "https://atualizascience.web.app/"
