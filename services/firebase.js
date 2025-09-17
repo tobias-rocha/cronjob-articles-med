@@ -70,6 +70,26 @@ async function getArticle(article) {
 	return doc.exists;
 }
 
+async function saveUserNotification({userId, pmid, title, body, tipo}) {
+	try {
+		const userRef = db.collection("usuarios").doc(userId);
+		const notificacoesRef = userRef.collection("notificacoes");
+
+		const newNotification = {
+			title: title,
+			pmid: pmid,
+			body: body,
+			type: tipo,
+			createdAt: `${Date.now()}`,
+		};
+
+		await notificacoesRef.add(newNotification);
+		console.log("Notificação salva com sucesso!");
+	} catch (err) {
+		console.error("Erro ao salvar notificação:", err);
+	}
+}
+
 async function sendNotification({ topic, title, body, pmid }) {
 	try {
 		const message = {
@@ -135,4 +155,4 @@ async function callSendEmail({ to, subject, text, html }) {
 	}
 }
 
-module.exports = { admin, db, saveArticle, getArticle, sendNotification, callSendEmail };
+module.exports = { admin, db, saveArticle, getArticle, saveUserNotification, sendNotification, callSendEmail };
