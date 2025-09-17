@@ -39,7 +39,7 @@ async function generateSummary(textAbstract) {
 				  },\n
 				  "conclusao_final": "Um parágrafo conciso com a mensagem-chave para o profissional de saúde.",\n
 				  "palavras_chave": [\n
-					"Liste entre 10 e 20 palavras-chave relevantes que representem o conteúdo central do artigo. Se o artigo fornecer palavras-chave dos autores, utilize-as (traduzidas) e sem caracteres especiais, complemente até fechar 20. Use 10 palavras simple e 10 compostas."\n
+					"Liste entre 10 e 20 palavras-chave relevantes que representem o conteúdo central do artigo. Se o artigo fornecer palavras-chave dos autores, utilize-as (traduzidas) e sem caracteres especiais, não coloque palavras entre parenteses, complemente até fechar 20. Use 10 palavras simple e 10 compostas."\n
 				  ]\n
 				}\n
 				*Regras adicionais:*\n
@@ -60,25 +60,7 @@ async function generateSummary(textAbstract) {
 		}
 	);
 
-	let content;
-
-	if (
-		resp.data.output &&
-		resp.data.output[0] &&
-		resp.data.output[0].content &&
-		resp.data.output[0].content[0] &&
-		resp.data.output[0].content[0].text
-	) {
-		content = resp.data.output[0].content[0].text;
-	} else {
-		content = JSON.stringify(resp.data, null, 2);
-	}
-
-	try {
-		return JSON.parse(content);
-	} catch {
-		return { error: "Não foi possível parsear", raw: content };
-	}
+	return resp.data.output[1].content[0].text;
 }
 
 module.exports = { generateSummary };
