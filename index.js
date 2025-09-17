@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { fetchPubMedArticles } = require('./sources/pubmed');
 const { generateSummary } = require('./services/gpt');
-const { saveArticle, getArticle, sendNotification, callSendEmail, db } = require('./services/firebase');
+const { saveArticle, getArticle, sendNotification, callSendEmail, db, saveUserNotification} = require('./services/firebase');
 
 async function main() {
 
@@ -103,6 +103,14 @@ async function main() {
 							body: artigo.resumo_gpt.titulo_original_traduzido,
 							pmid: artigo.pmid
 						});
+
+						await saveUserNotification({
+							userId: usuario.id,
+							pmid: artigo.pmid,
+							title: 'NOVO ARTIGO',
+							body: artigo.resumo_gpt.titulo_original_traduzido,
+							tipo: 'push'
+						});
 					} else {
 						const htmlContent = generateArticleHTML(artigo);
 
@@ -111,6 +119,14 @@ async function main() {
 							subject: `Novo artigo: ${artigo.resumo_gpt.titulo_original_traduzido}`,
 							text: `${artigo.resumo_gpt.titulo_original_traduzido}\nLeia mais: https://atualizascience.web.app/articles/${encodeURIComponent(artigo.pmid)}`,
 							html: htmlContent
+						});
+
+						await saveUserNotification({
+							userId: usuario.id,
+							pmid: artigo.pmid,
+							title: 'NOVO ARTIGO',
+							body: artigo.resumo_gpt.titulo_original_traduzido,
+							tipo: 'email'
 						});
 					}
 				}
