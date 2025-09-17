@@ -62,12 +62,6 @@ async function main() {
 				continue;
 			}
 
-			const ja_existe = await getArticle(artigo);
-			if (ja_existe) {
-				console.log(`Já existe: ${artigo.title}`);
-				continue;
-			}
-
 			const resumo = await generateSummary(artigo.abstractFull);
 			try {
 				artigo.resumo_gpt = typeof resumo === 'string' ? JSON.parse(resumo) : resumo;
