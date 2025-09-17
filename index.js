@@ -90,7 +90,10 @@ async function main() {
 				const userKeywords = (usuario.notificacoes.palavras_chave || []).map(normalizeKeyword);
 
 				const match = userKeywords.some(kw => artigoKeywords.includes(kw));
-				const relevanciaOk = relevanceMatches(usuario.notificacoes.relevancia, parseInt(artigo.resumo_gpt.nivel_de_evidencia_e_limitacoes.nota_nivel_de_evidencia));
+				const relevanciaOk = relevanceMatches(
+					usuario.notificacoes.relevancia,
+					parseInt(artigo.resumo_gpt?.nivel_de_evidencia_e_limitacoes?.nota_nivel_de_evidencia ?? 0)
+				);
 
 				if (match && relevanciaOk && usuario.notificacoes.habilitado) {
 					if (!usuario.ios) {
