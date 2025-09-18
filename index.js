@@ -66,6 +66,7 @@ async function main() {
 			try {
 				artigo.resumo_gpt = typeof resumo === 'string' ? JSON.parse(resumo) : resumo;
 			} catch (e) {
+				console.log(resumo);
 				console.log(`Erro ao parsear resumo de ${artigo.title}`, e);
 				continue;
 			}
