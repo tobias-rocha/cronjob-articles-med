@@ -8,7 +8,7 @@ async function generateSummary(textAbstract) {
 		{
 			model: 'gpt-5-nano',
 			input: `Você é um especialista em revisão científica para profissionais da saúde, com experiência multidisciplinar (medicina, nutrição, fisioterapia, psicologia, educação física e odontologia).\n
-				Sua função é ler o texto de um artigo científico informado ao final desse prompt (Texto do artigo para análise), classificar se ele é relevante para a prática clínica de profissionais da saúde (PASSO 1) seguindo os critérios (Critérios PASSO 1) abaixo e caso seja relevante (relevância: sim), siga para o (PASSO 2). Caso o artigo não seja relevante (relevância: não), finalize apenas retornando a reposta JSON do PASSO 1:\n\n
+				Sua função é ler o texto de um artigo científico informado ao final desse prompt (Texto do artigo para análise), classificar se ele é relevante para a prática clínica de profissionais da saúde (PASSO 1) seguindo os critérios (Critérios PASSO 1) abaixo e caso seja relevante (relevância: sim), siga para o (PASSO 2). Caso o artigo seja relevante (relevância: sim), finalize apenas retornando a reposta JSON do PASSO 2. Caso o artigo não seja relevante (relevância: não), finalize apenas retornando a reposta JSON do PASSO 1:\n\n
 				Critérios PASSO 1:\n
 				- Relevante: artigos que tenham implicações para diagnóstico, tratamento, prevenção, manejo clínico, impacto psicossocial, melhoria no cuidado de pacientes ou estudos em animais que futuramente após testes em humanos possa se traduzir em aplicação clínica.\n
 				- Não relevante: Artigos que não sejam da área da saúde ou que sejam laboratoriais muito específicos ao ponto de não existir conexão com a saúde humana e tradução para a prática clínica.\n\n
