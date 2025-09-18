@@ -95,41 +95,21 @@ async function sendNotification({ topic, title, body, pmid }) {
 	try {
 		const message = {
 			data: {
-				priority: "high",
-				sound: "default",
-				contentAvailable: "true",
-				customSentTime: `${Date.now()}`,
-				pmid: pmid,
+				title: title,
+				body: body,
+				pmid: pmid || "",
 				link: pmid
 					? `https://atualizascience.web.app/articles/${encodeURIComponent(pmid)}`
 					: "https://atualizascience.web.app/"
 			},
-			notification: {
-				title: title,
-				body: body
-			},
 			webpush: {
-				notification: {
-					icon: 'https://firebasestorage.googleapis.com/v0/b/atualizascience.firebasestorage.app/o/logo_azul_img.png?alt=media&token=6c43068d-0d86-4404-aadf-0ce44abaf8ca'
-				},
 				fcmOptions: {
 					link: pmid
 						? `https://atualizascience.web.app/articles/${encodeURIComponent(pmid)}`
 						: "https://atualizascience.web.app/"
 				}
 			},
-			topic: topic,
-			apns: {
-				payload: {
-					aps: {
-						alert: {
-							title: title,
-							body: body
-						},
-						contentAvailable: true
-					}
-				},
-			}
+			topic: topic
 		};
 
 		const response = await admin.messaging().send(message);
