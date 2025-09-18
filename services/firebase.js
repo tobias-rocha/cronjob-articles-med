@@ -80,6 +80,7 @@ async function saveUserNotification({userId, pmid, title, body, tipo}) {
 			pmid: pmid,
 			body: body,
 			type: tipo,
+			read: false,
 			createdAt: admin.firestore.Timestamp.now(),
 		};
 
