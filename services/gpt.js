@@ -20,17 +20,17 @@ async function generateSummary(textAbstract) {
 				Gerar um resumo objetivo, técnico e aplicável na prática clínica.\n\n
 				A resposta deve ser *exclusivamente em formato JSON válido*, obedecendo à seguinte estrutura e instruções detalhadas:\n\n
 				{\n
-				  "titulo_original_traduzido": "Traduza integralmente o título original do artigo para o português.",\n
+				  "titulo_original_traduzido": "Traduza integralmente o título original do artigo para o português Brasil.",\n
 				  "objetivo_do_estudo": "Descreva o objetivo em até 2 frases.",\n
 				  "metodologia": "Informe tipo de estudo, população/amostra, duração, principais intervenções e variáveis analisadas.",\n
 				  "principais_achados": "Destaque os resultados mais relevantes. Sempre que possível, inclua dados numéricos ou estatísticos importantes (ex.: valores de p, IC95%, diferenças percentuais).",\n
 				  "implicacoes_na_pratica_clinica": {\n
 					"medicina": "Explique como os achados podem ser aplicados na prática médica.",\n
-					"nutricao": "Explique como os achados podem ser aplicados na nutrição clínica.",\n
-					"fisioterapia": "Explique como os achados podem ser aplicados na fisioterapia.",\n
-					"psicologia": "Explique como os achados podem ser aplicados na psicologia clínica.",\n
-					"educacao_fisica": "Explique como os achados podem ser aplicados na educação física.",\n
-					"odontologia": "Explique como os achados podem ser aplicados na odontologia."\n
+					"nutricao": "...",\n
+					"fisioterapia": "...",\n
+					"psicologia": "...",\n
+					"educacao_fisica": "...",\n
+					"odontologia": "..."\n
 				  },\n
 				  "nivel_de_evidencia_e_limitacoes": {\n
 					"classificacao": "Classifique o nível de evidência (ex.: ensaio clínico randomizado, revisão sistemática, estudo observacional).",\n
@@ -39,9 +39,9 @@ async function generateSummary(textAbstract) {
 				  },\n
 				  "conclusao_final": "Um parágrafo conciso com a mensagem-chave para o profissional de saúde.",\n
 				  "palavras_chave": [\n
-					"Liste entre 10 e 20 palavras-chave relevantes que representem o conteúdo central do artigo. Se o artigo fornecer palavras-chave dos autores, utilize-as (traduzidas) e sem caracteres especiais, não coloque palavras entre parenteses, complemente até fechar 20. Use 10 palavras simple e 10 compostas."\n
-				  ]\n
-				}\n
+					"Liste 20 palavras-chave relevantes que representem o conteúdo central do artigo. Se o artigo fornecer palavras-chave dos autores, utilize-as e complemente até fechar 20. Utilize 10 palavras simples e 10 compostas"\n
+				  ],\n
+				}\n\n
 				*Regras adicionais:*\n
 				- Linguagem clara, técnica e com termos científicos corretos.\n
 				- Não inventar dados. Usar apenas informações contidas no artigo fornecido.\n
