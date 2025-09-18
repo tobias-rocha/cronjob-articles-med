@@ -35,7 +35,7 @@ async function generateSummary(textAbstract) {
 				  "nivel_de_evidencia_e_limitacoes": {\n
 					"classificacao": "Classifique o nível de evidência (ex.: ensaio clínico randomizado, revisão sistemática, estudo observacional).",\n
 					"limitacoes": "Liste as principais limitações do estudo.",\n
-					"nota_nivel_de_evidencia": "Dê uma nota de 0 a 10 para o nível de evidência do estudo."\n
+					"nota_nivel_de_evidencia": "Dê uma nota de 0 a 10 para o nível de evidência do estudo (ex.: 1 ou 5 ou 10, nunca retorne o valor com /10)."\n
 				  },\n
 				  "conclusao_final": "Um parágrafo conciso com a mensagem-chave para o profissional de saúde.",\n
 				  "palavras_chave": [\n
