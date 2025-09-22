@@ -95,18 +95,27 @@ async function sendNotification({ topic, title, body, pmid }) {
 	try {
 		const message = {
 			data: {
+				priority: "high",
+				sound: "default",
+				contentAvailable: "true",
+				customSentTime: `${Date.now()}`,
+				pmid: pmid,
+				link: "https://atualizascience.web.app/articles/"+pmid
+			},
+			notification: {
 				title: title,
-				body: body,
-				pmid: pmid || "",
-				link: pmid
-					? `https://atualizascience.web.app/articles/${encodeURIComponent(pmid)}`
-					: "https://atualizascience.web.app/"
+				body: body
 			},
 			webpush: {
+				notification: {
+					icon: 'https://firebasestorage.googleapis.com/v0/b/atualizascience.firebasestorage.app/o/logo_azul_img.png?alt=media&token=6c43068d-0d86-4404-aadf-0ce44abaf8ca',
+					requireInteraction: true,
+				},
 				fcmOptions: {
-					link: pmid
-						? `https://atualizascience.web.app/articles/${encodeURIComponent(pmid)}`
-						: "https://atualizascience.web.app/"
+					link: "https://atualizascience.web.app/articles/"+pmid
+				},
+				data: {
+					link: "https://atualizascience.web.app/articles/"+pmid
 				}
 			},
 			topic: topic
