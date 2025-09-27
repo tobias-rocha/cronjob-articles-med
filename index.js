@@ -44,6 +44,7 @@ async function main() {
 	const usersSnapshot = await db.collection('usuarios').get();
 	const usuarios = usersSnapshot.docs.map(doc => ({
 		id: doc.id,
+		ios: doc.data().ios,
 		notificacoes: doc.data().notificacoes
 	}));
 
