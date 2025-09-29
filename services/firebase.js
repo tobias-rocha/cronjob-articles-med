@@ -139,7 +139,7 @@ async function callSendEmail({ to, subject, text, html, nome }) {
 
 	try {
 		const info = await transporter.sendMail(mailOptions);
-		console.log(`Notificação enviada para ${nome}:`, info);
+		console.log(`Email enviado para ${nome}:`, info);
 	} catch (err) {
 		console.log("Erro ao enviar notificação:", err);
 	}
