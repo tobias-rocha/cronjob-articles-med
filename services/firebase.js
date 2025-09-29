@@ -91,7 +91,7 @@ async function saveUserNotification({userId, pmid, title, body, tipo}) {
 	}
 }
 
-async function sendNotification({ topic, title, body, pmid }) {
+async function sendNotification({ topic, title, body, pmid, nome }) {
 	try {
 		const message = {
 			data: {
@@ -122,13 +122,13 @@ async function sendNotification({ topic, title, body, pmid }) {
 		};
 
 		const response = await admin.messaging().send(message);
-		console.log("Notificação enviada:", response);
+		console.log(`Notificação enviada para ${nome}:`, response);
 	} catch (err) {
 		console.log("Erro ao enviar notificação:", err);
 	}
 }
 
-async function callSendEmail({ to, subject, text, html }) {
+async function callSendEmail({ to, subject, text, html, nome }) {
 	const mailOptions = {
 		from: '"Atualiza Science" <atualizascience@gmail.com>',
 		to,
@@ -139,7 +139,7 @@ async function callSendEmail({ to, subject, text, html }) {
 
 	try {
 		const info = await transporter.sendMail(mailOptions);
-		console.log("Notificação enviada:", info);
+		console.log(`Notificação enviada para ${nome}:`, info);
 	} catch (err) {
 		console.log("Erro ao enviar notificação:", err);
 	}

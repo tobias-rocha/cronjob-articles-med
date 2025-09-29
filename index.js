@@ -44,6 +44,7 @@ async function main() {
 	const usersSnapshot = await db.collection('usuarios').get();
 	const usuarios = usersSnapshot.docs.map(doc => ({
 		id: doc.id,
+		nome: doc.data().nome,
 		email: doc.data().email,
 		ios: doc.data().ios,
 		notificacoes: doc.data().notificacoes
@@ -98,7 +99,8 @@ async function main() {
 							topic: 'usuario_'+usuario.id,
 							title: 'NOVO ARTIGO',
 							body: artigo.resumo_gpt.titulo_original_traduzido,
-							pmid: artigo.pmid
+							pmid: artigo.pmid,
+							nome: usuario.nome
 						});
 
 						await saveUserNotification({
@@ -115,7 +117,8 @@ async function main() {
 							to: usuario.email,
 							subject: `Novo artigo: ${artigo.resumo_gpt.titulo_original_traduzido}`,
 							text: `${artigo.resumo_gpt.titulo_original_traduzido}\nLeia mais: https://atualizascience.web.app/articles/${encodeURIComponent(artigo.pmid)}`,
-							html: htmlContent
+							html: htmlContent,
+							nome: usuario.nome
 						});
 
 						await saveUserNotification({
