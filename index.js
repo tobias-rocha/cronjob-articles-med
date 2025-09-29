@@ -30,7 +30,7 @@ async function main() {
 			<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
 			  <h2 style="color: #1E40AF;">${article.title}</h2>
 			  ${article.resumo_gpt.objetivo_do_estudo ? `<p><strong>Objetivo do Estudo:</strong> ${article.resumo_gpt.objetivo_do_estudo}</p>` : ''}
-			  ${article.authors ? `<p><strong>Autores:</strong> ${article.authors.join(', ')}</p>` : ''}
+			  ${article.authors && article.authors.length ? `<p><strong>Autores:</strong> ${article.authors.map(a => `${a.foreName} ${a.lastName}`).join(', ')}</p>` : ''}
 			  <p>
 				<a href="https://atualizascience.web.app/articles/${encodeURIComponent(article.pmid)}"
 				   style="display: inline-block; padding: 10px 15px; background-color: #1E40AF; color: #fff; text-decoration: none; border-radius: 4px;">
