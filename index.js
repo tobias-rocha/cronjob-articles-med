@@ -28,7 +28,7 @@ async function main() {
 	function generateArticleHTML(article) {
 		return `
 			<div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
-			  <h2 style="color: #1E40AF;">${article.title}</h2>
+			  <h2 style="color: #1E40AF;">${article.resumo_gpt.titulo_original_traduzido}</h2>
 			  ${article.resumo_gpt.objetivo_do_estudo ? `<p><strong>Objetivo do Estudo:</strong> ${article.resumo_gpt.objetivo_do_estudo}</p>` : ''}
 			  ${article.authors && article.authors.length ? `<p><strong>Autores:</strong> ${article.authors.map(a => `${a.foreName} ${a.lastName}`).join(', ')}</p>` : ''}
 			  <p>
