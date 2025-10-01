@@ -36,6 +36,7 @@ async function saveArticle(article) {
 			.toLowerCase()
 			.normalize('NFD')
 			.replace(/[\u0300-\u036f]/g, '')
+			.replace(/[()]/g, '')
 			.replace(/\s+/g, '_')
 			.replace(/__+/g, '_')
 			.replace(/^_|_$/g, '');
