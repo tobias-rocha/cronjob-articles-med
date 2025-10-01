@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { fetchPubMedArticles } = require('./sources/pubmed');
 const { generateSummary } = require('./services/gpt');
-const { saveArticle, getArticle, sendNotification, callSendEmail, db, saveUserNotification} = require('./services/firebase');
+const { saveArticle, getArticle, sendNotification, callSendEmail, db, saveUserNotification, saveArticleNoRelevance} = require('./services/firebase');
 
 async function main() {
 
@@ -75,6 +75,7 @@ async function main() {
 			}
 
 			if (artigo.resumo_gpt.relevancia && artigo.resumo_gpt.relevancia.toLowerCase() === "não") {
+				await saveArticleNoRelevance(artigo);
 				console.log(`⚠️ Ignorado (não relevante): ${artigo.title}`);
 				continue;
 			}

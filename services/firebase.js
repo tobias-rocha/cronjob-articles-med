@@ -63,6 +63,13 @@ async function saveArticle(article) {
 	return true;
 }
 
+async function saveArticleNoRelevance(article) {
+	const ref = db.collection('artigos_nao_relevantes').doc(article.pmid);
+	await ref.set({ pmid:article.pmid, doi: article.doi, link: article.link, dateColected: admin.firestore.Timestamp.now() });
+
+	return true;
+}
+
 async function getArticle(article) {
 	const ref = db.collection('artigos').doc(article.pmid);
 	const doc = await ref.get();
@@ -145,4 +152,4 @@ async function callSendEmail({ to, subject, text, html, nome }) {
 	}
 }
 
-module.exports = { admin, db, saveArticle, getArticle, saveUserNotification, sendNotification, callSendEmail };
+module.exports = { admin, db, saveArticle, getArticle, saveUserNotification, sendNotification, callSendEmail, saveArticleNoRelevance };

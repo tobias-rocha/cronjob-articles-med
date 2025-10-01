@@ -43,7 +43,16 @@ async function fetchPubMedArticles(date = null) {
 
 	const savedIds = snapshot.docs.map(doc => doc.data().pmid);
 
-	ids = ids.filter(id => !savedIds.includes(id));
+	const snapshotNaoRelevantes = await db.collection('artigos_nao_relevantes')
+		.where('dateColected', '>=', admin.firestore.Timestamp.fromDate(hoje))
+		.where('dateColected', '<', admin.firestore.Timestamp.fromDate(amanha))
+		.get();
+
+	const naoRelevantesIds = snapshotNaoRelevantes.docs.map(doc => doc.data().pmid);
+
+	const todosIdsBloqueados = [...savedIds, ...naoRelevantesIds];
+
+	ids = ids.filter(id => !todosIdsBloqueados.includes(id));
 
 	ids = ids.slice(0, 1000);
 
