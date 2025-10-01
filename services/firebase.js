@@ -29,34 +29,6 @@ const transporter = nodemailer.createTransport({
 });
 
 async function saveArticle(article) {
-	const stopwords = ['de', 'da', 'do', 'das', 'dos', 'em', 'para', 'com', 'no', 'na', 'nos', 'nas', 'e'];
-
-	function normalizeKeyword(str) {
-		return str
-			.toLowerCase()
-			.normalize('NFD')
-			.replace(/[\u0300-\u036f]/g, '')
-			.replace(/\s+/g, '_')
-			.replace(/__+/g, '_')
-			.replace(/^_|_$/g, '');
-	}
-
-	if (article.resumo_gpt && Array.isArray(article.resumo_gpt.palavras_chave)) {
-		const novasPalavras = [];
-
-		for (const palavra of article.resumo_gpt.palavras_chave) {
-			if (!novasPalavras.includes(palavra)) novasPalavras.push(palavra);
-
-			const partes = palavra.split(/\s+/).filter(p => !stopwords.includes(p.toLowerCase()));
-
-			for (const p of partes) {
-				if (!novasPalavras.includes(p)) novasPalavras.push(p);
-			}
-		}
-
-		article.resumo_gpt.palavras_chave = novasPalavras.map(normalizeKeyword).filter(Boolean);
-	}
-
 	const ref = db.collection('artigos').doc(article.pmid);
 	await ref.set({ ...article, dateColected: admin.firestore.Timestamp.now() });
 
