@@ -29,6 +29,22 @@ const transporter = nodemailer.createTransport({
 });
 
 async function saveArticle(article) {
+	function normalizeKeyword(str) {
+		return str
+			.toLowerCase()
+			.normalize('NFD')
+			.replace(/[\u0300-\u036f]/g, '')
+			.replace(/\s+/g, '_')
+			.replace(/__+/g, '_')
+			.replace(/^_|_$/g, '');
+	}
+
+	if (article.resumo_gpt && Array.isArray(article.resumo_gpt.palavras_chave)) {
+		article.resumo_gpt.palavras_chave = article.resumo_gpt.palavras_chave
+			.map(normalizeKeyword)
+			.filter(Boolean);
+	}
+
 	const ref = db.collection('artigos').doc(article.pmid);
 	await ref.set({ ...article, dateColected: admin.firestore.Timestamp.now() });
 
