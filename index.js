@@ -80,10 +80,10 @@ async function main() {
 				continue;
 			}
 
+			const artigoKeywords = (artigo.resumo_gpt.palavras_chave || []).map(normalizeKeyword);
+
 			await saveArticle(artigo);
 			console.log(`Salvo: ${artigo.title}`);
-
-			const artigoKeywords = (artigo.resumo_gpt.palavras_chave || []).map(normalizeKeyword);
 
 			for (const usuario of usuarios) {
 				const userKeywords = (usuario.notificacoes.palavras_chave || []).map(normalizeKeyword);
