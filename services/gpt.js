@@ -41,7 +41,21 @@ async function generateSummary(textAbstract) {
 				  "nivel_de_evidencia_e_limitacoes": {
 					"classificacao": "Classifique o nível de evidência (ex.: revisão sistemática/metanálise, ensaio clínico randomizado, estudo de coorte, caso-controle, transversal, série de casos, opinião de especialistas).",
 					"limitacoes": "Liste as principais limitações do estudo.",
-					"nota_nivel_de_evidencia": "Atribua nota baseada no tipo de estudo (meta=10, RCT=9, coorte=7, caso-controle=6, transversal=4, opinião=2) e ajuste -1 para cada limitação importante (ex.: N pequeno, viés, ausência de controle, estatística fraca)."
+					"nota_nivel_de_evidencia": "Atribua nota de 0 a 10. Ajuste -1 caso o artigo tenha alguma limitação grave e -0.5 para limitação moderada. Use a escala a seguir
+					  10: Revisão sistemática com metanálise de RCTs grandes, multicêntricos,
+					  9.5: Revisão sistemática bem conduzida sem metanálise,
+					  9: Ensaio clínico randomizado (RCT) grande, multicêntrico,
+					  8: Ensaio clínico randomizado (RCT) pequeno ou piloto,
+					  7: Estudo de coorte (7 se prospectivo, N adequado, baixo viés; 6.5 se retrospectivo ou com limitações metodológicas),
+					  6: Estudo caso-controle (N adequado, viés controlado),
+					  5: Estudo transversal ou quase-experimental (5 se bem conduzido, 4.5 se limitado),
+					  4: Série de casos (>=10 casos, dados consistentes),
+					  3: Relato de caso (1 ou poucos casos),
+					  2.5: Revisão narrativa (2.5 se estruturada, 2 se superficial),
+					  2: Opinião de especialistas ou consensos não sistematizados,
+					  1.5: Editorial ou carta ao editor,
+					  1-3: Estudos pré-clínicos (1 in vitro; 2 in vivo em animais pequenos; 3 animais grandes ou com boa metodologia),
+					  4-6: Estudos qualitativos (6 se amostra ampla, rigor metodológico e saturação teórica; 4 se amostra pequena ou pouco rigor)"
 				  },
 				  "conclusao_final": "Um parágrafo conciso com a mensagem-chave para o profissional de saúde.",
 				  "palavras_chave": [
