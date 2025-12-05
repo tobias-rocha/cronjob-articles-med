@@ -56,6 +56,7 @@ async function saveArticle(article) {
 		}
 
 		article.resumo_gpt.palavras_chave = novasPalavras.map(normalizeKeyword).filter(Boolean);
+		article.titulo_traduzido = article.resumo_gpt.titulo_original_traduzido;
 	}
 
 	const ref = db.collection('artigos').doc(article.pmid);
